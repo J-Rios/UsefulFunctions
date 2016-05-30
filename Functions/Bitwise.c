@@ -1,55 +1,55 @@
 
-byte lowNibble(byte in) // Extract the Low Nibble from a Byte
+uint8_t lowNibble(uint8_t in) // Extract the Low Nibble from a Byte
 {
-    return (byte)(in & 0x0F); // in data = asdfghjk; AND operation -> asdfghjk AND 00001111 = 0000ghjk
+    return (uint8_t)(in & 0x0F); // in data = asdfghjk; AND operation -> asdfghjk AND 00001111 = 0000ghjk
 }
 
-byte highNibble(byte in) // Extract the High Nibble from a Byte
+uint8_t highNibble(uint8_t in) // Extract the High Nibble from a Byte
 {
-    return (byte)((in & 0xF0) >> 4); // in data = asdfghjk; AND operation -> asdfghjk AND 11110000 = asdf0000; Righ-Shift 4 times -> asdf0000 >> 4 = 0000asdf
+    return (uint8_t)((in & 0xF0) >> 4); // in data = asdfghjk; AND operation -> asdfghjk AND 11110000 = asdf0000; Righ-Shift 4 times -> asdf0000 >> 4 = 0000asdf
 }
 
-byte createByte(byte lowNibble, byte highNibble) // Create a Byte from Low and High Nibbles
+uint8_t createByte(uint8_t lowNibble, uint8_t highNibble) // Create a Byte from Low and High Nibbles
 {
-    return (byte)((highNibble << 4) | lowNibble); // Left-Shift 4 times the high Nibble -> 0000ghjk << 4 = asdf0000; OR operation -> asdf0000 OR 0000ghjk = asdfghjk
+    return (uint8_t)((highNibble << 4) | lowNibble); // Left-Shift 4 times the high Nibble -> 0000ghjk << 4 = asdf0000; OR operation -> asdf0000 OR 0000ghjk = asdfghjk
 }
 
-byte getBit(byte in, byte num) // Get a bit value from a Byte
+uint8_t getBit(uint8_t in, uint8_t num) // Get a bit value from a Byte
 {
-    return (byte)((in & (1<<num)) >> num);
+    return (uint8_t)((in & (1<<num)) >> num);
 }
 
-byte setBit(byte in, byte num) // Set a bit value to a Byte
+uint8_t setBit(uint8_t in, uint8_t num) // Set a bit value to a Byte
 {
-    return (byte)(in | (1<<num));
+    return (uint8_t)(in | (1<<num));
 }
 
-byte SRByte(byte in, byte steps) // Shift-Right Byte a number of steps
+uint8_t SRByte(uint8_t in, uint8_t steps) // Shift-Right Byte a number of steps
 {
-    return (byte)(in >> steps);
+    return (uint8_t)(in >> steps);
 }
 
-byte SLByte(byte in, byte steps) // Shift-Left Byte a number of steps
+uint8_t SLByte(uint8_t in, uint8_t steps) // Shift-Left Byte a number of steps
 {
-    return (byte)(in << steps);
+    return (uint8_t)(in << steps);
 }
 
-byte NOT(byte in)
+uint8_t NOT(uint8_t in)
 {
-    return (byte)(~in);
+    return (uint8_t)(~in);
 }
 
-byte AND(byte A, byte B)
+uint8_t AND(uint8_t A, uint8_t B)
 {
-    return (byte)(A & B);
+    return (uint8_t)(A & B);
 }
 
-byte OR(byte A, byte B)
+uint8_t OR(uint8_t A, uint8_t B)
 {
-    return (byte)(A | B);
+    return (uint8_t)(A | B);
 }
 
-byte XOR(byte A, byte B)
+uint8_t XOR(uint8_t A, uint8_t B)
 {
-    return (byte)(A ^ B);
+    return (uint8_t)(A ^ B);
 }
