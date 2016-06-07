@@ -11,7 +11,7 @@ uint8_t highNibble(uint8_t in) // Extract the High Nibble from a Byte
 
 uint8_t createByte(uint8_t lowNibble, uint8_t highNibble) // Create a Byte from Low and High Nibbles
 {
-    return (uint8_t)((highNibble << 4) | lowNibble); // Left-Shift 4 times the high Nibble -> 0000ghjk << 4 = asdf0000; OR operation -> asdf0000 OR 0000ghjk = asdfghjk
+    return (uint8_t)((highNibble << 4) | lowNibble); // Left-Shift 4 times the high Nibble -> 0000asdf << 4 = asdf0000; OR operation -> asdf0000 OR 0000ghjk = asdfghjk
 }
 
 uint8_t getBit(uint8_t in, uint8_t num) // Get a bit value from a Byte
