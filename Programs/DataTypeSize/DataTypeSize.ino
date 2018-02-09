@@ -113,8 +113,8 @@ void loop()
 }
 
 /*
-Result Arduino:
-----------------
+Result Arduino (ATmega328):
+-----------------------------------
 boolean = 1 bytes = 8 bits
 char = 1 bytes = 8 bits
 int = 2 bytes = 16 bits
@@ -123,11 +123,28 @@ float = 4 bytes = 32 bits
 double = 4 bytes = 32 bits
 byte = 1 bytes = 8 bits
 word = 2 bytes = 16 bits
-
 unsigned char = 1 bytes = 8 bits
 unsigned int = 2 bytes = 16 bits
 unsigned long = 4 bytes = 32 bits
+uint8_t = 1 bytes = 8 bits
+uint16_t = 2 bytes = 16 bits
+uint32_t = 4 bytes = 32 bits
+uint64_t = 8 bytes = 64 bits
 
+
+Result ESP32:
+-----------------------------------
+boolean = 1 bytes = 8 bits
+char = 1 bytes = 8 bits
+int = 4 bytes = 32 bits
+long = 4 bytes = 32 bits
+float = 4 bytes = 32 bits
+double = 8 bytes = 64 bits
+byte = 1 bytes = 8 bits
+word = 4 bytes = 32 bits
+unsigned char = 1 bytes = 8 bits
+unsigned int = 4 bytes = 32 bits
+unsigned long = 4 bytes = 32 bits
 uint8_t = 1 bytes = 8 bits
 uint16_t = 2 bytes = 16 bits
 uint32_t = 4 bytes = 32 bits
