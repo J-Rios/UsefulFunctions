@@ -9,6 +9,11 @@ bool str_read_until_char(char* str, const char c, char* readed=NULL, const bool 
 bool str_read_until_word(char* str, const char* word, char* readed=NULL, const bool preserve=false);
 bool str_read_line(char* str, char* readed=NULL, const bool preserve=false);
 void str_rm_left_zeros(char* str, char* readed=NULL);
+int str_to_int(const char* str_in);
+bool str_is_number(const char* s);
+char* int_to_str(int int_in);
+bool str_is_number(const char* s);
+bool str_is_IP(const char* str);
 
 /*************************************************************************************************/
 
@@ -284,6 +289,102 @@ void str_rm_left_zeros(char* str, char* readed)
 		}
 		readed[a] = '\0';
 	}
+}
+
+// Convert int to string
+char* int_to_str(int int_in)
+{
+	char* str_out = new char[sizeof(int)+1]();
+
+	memset(str_out, '\0', sizeof(int)+1);
+	sprintf(str_out, "%d", int_in);
+
+	return str_out;
+}
+
+// Convert string to int
+int str_to_int(const char* str_in)
+{
+	int int_out = 0;
+
+	for(int i = 0; i < strlen(str_in); i++)
+		int_out = int_out * 10 + (str_in[i] - '0');
+
+	return int_out;
+}
+
+// Check if a string is a number
+bool str_is_number(const char* s)
+{
+	bool is_number = true;
+
+	while(*s)
+	{
+		if((*s < '0') || (*s > '9'))
+		{
+			is_number = false;
+			break;
+		}
+		else
+			s++;
+	}
+
+	return is_number;
+}
+
+// Check if a string has a valid IP format
+bool str_is_IP(const char* str)
+{
+	bool is_ip = false;
+	uint8_t i;
+	uint8_t num_dots = 0;
+	int8_t dots_places[3] = { -1, -1, -1 };
+
+	// If str has a max lenght equal to max IP lenght or less
+	if(strlen(str) <= 15)
+	{
+		// Check if the format of the string is corresponding to an IP adderss
+		for(i = 0; i < strlen(str); i++)
+		{
+			// If there is a '.'
+			if(str[i] == '.')
+			{
+				if(dots_places[0] == -1)
+					dots_places[0] = i;
+				else if(dots_places[1] == -1)
+					dots_places[1] = i;
+				else if(dots_places[2] == -1)
+					dots_places[2] = i;
+
+				num_dots++;
+			}
+			// If there is a null end of string character
+			else if(str[i] == '\0')
+				break;
+			// If there is a character that is not a '.', '\0' or a number
+			else if((str[i] < '0') || (str[i] > '9'))
+			{
+				num_dots = 0;
+				break;
+			}
+		}
+
+		// If there is 3 points in the string
+		if(num_dots == 3)
+		{
+			// Check if points '.' are in correct places (min one number between points)
+			if((dots_places[0] > 0) && (dots_places[0] <= 3))
+			{
+				if((dots_places[1] > dots_places[0] + 1) && (dots_places[1] <= 7))
+				{
+					if((dots_places[2] > dots_places[1] + 1) && (dots_places[1] <= 11))
+						is_ip = true;
+				}
+			}
+		}
+	}
+
+	return is_ip;
 }
 
 /*************************************************************************************************/
