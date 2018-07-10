@@ -4,7 +4,7 @@
 /*** Interface ***/
 
 void str_rm_char(char* str, const char c_remove, char* readed=NULL);
-bool str_contains(char* str, const char* word);
+bool str_contains(const char* s1, const char* s2);
 bool str_read_until_char(char* str, const char c, char* readed=NULL, const bool preserve=false);
 bool str_read_until_word(char* str, const char* word, char* readed=NULL, const bool preserve=false);
 bool str_read_line(char* str, char* readed=NULL, const bool preserve=false);
