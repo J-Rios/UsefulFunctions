@@ -52,48 +52,31 @@ void str_rm_char(char* str, const char c_remove, char* readed)
 }
 
 // Check if a string contains a subtring  (str: "asdf qwerty lkjh" -> remove " qwerty" -> str: "asdf lkjh")
-bool str_contains(char* str, const char* word)
+bool str_contains(const char* s1, const char* s2)
 {
-	bool found = false;
-	char* read_word = new char[strlen(word) + 1]();
-	uint16_t a, b; // strlen(str) < 65536
-	char char_read = '\0';
-
-	a = 0;
-	b = 0;
-	memset(read_word, '\0', sizeof(strlen(word) + 1));
-	while(a < strlen(str) + 1)
+	size_t length_s1 = strlen(s1);
+	size_t length_s2 = strlen(s2);
+	
+	if((length_s1 == 0) || (length_s2 == 0))
+		return false;
+	if(length_s1 < length_s2)
+		return false;
+	
+	char substr[length_s2+1];
+	for (size_t i = 0; i < length_s1+1; i++)
 	{
-		char_read = str[a];
-
-		if(char_read == word[b])
+		if(i+length_s2 < length_s1+1)
 		{
-			if(b < strlen(word))
-			{
-				read_word[b] = char_read;
-				b = b + 1;
-			}
-
-			if(b == strlen(word))
-			{
-				read_word[b] = '\0';
-				if(strcmp(read_word, word) == 0)
-				{
-					found = true;
-					break;
-				}
-			}
+			memcpy(substr, &s1[i], length_s2);
+			substr[length_s2] = '\0';
+			if (strcmp(substr, s2) == 0)
+				return true;
 		}
 		else
-		{
-			b = 0;
-			memset(read_word, '\0', sizeof(strlen(word) + 1));
-		}
-
-		a = a + 1;
+			break;
 	}
-
-	return found;
+	
+	return false;
 }
 
 // Read a line of an array
