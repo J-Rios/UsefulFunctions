@@ -219,7 +219,7 @@ bool str_read_until_word(char* str, const char* word, char* readed, const bool p
 	return found;
 }
 
-size_t cstr_read_between_chars(char* str, const char c, char* readed, const size_t readed_len, size_t start_at, const bool preserve)
+size_t str_read_between_chars(char* str, const char c, char* readed, const size_t readed_len, size_t start_at, const bool preserve)
 {
 	size_t str_len = strlen(str);
 	size_t second_char_at = 0;
