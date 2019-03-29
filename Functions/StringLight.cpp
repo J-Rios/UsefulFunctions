@@ -7,6 +7,7 @@ void str_rm_char(char* str, const char c_remove, char* readed=NULL);
 bool str_contains(const char* s1, const char* s2);
 bool str_read_until_char(char* str, const char c, char* readed=NULL, const bool preserve=false);
 bool str_read_until_word(char* str, const char* word, char* readed=NULL, const bool preserve=false);
+size_t str_read_between_chars(char* str, const char c, char* readed, const size_t readed_len, size_t start_at=0, const bool preserve=true);
 bool str_read_line(char* str, char* readed=NULL, const bool preserve=false);
 void str_rm_left_zeros(char* str, char* readed=NULL);
 int str_to_int(const char* str_in);
@@ -216,6 +217,47 @@ bool str_read_until_word(char* str, const char* word, char* readed, const bool p
 		readed[readed_len] = '\0';
 
 	return found;
+}
+
+size_t cstr_read_between_chars(char* str, const char c, char* readed, const size_t readed_len, size_t start_at, const bool preserve)
+{
+	size_t str_len = strlen(str);
+	size_t second_char_at = 0;
+	bool first_char_reach = false;
+	bool second_char_reach = false;
+	size_t r = 0;
+	char read_c;
+	
+	// If start position if out of string
+	if(start_at >= str_len-1)
+		return 0;
+	
+	// Go through the string and search for substring
+	for(size_t i = start_at; i < str_len; i++)
+	{
+		read_c = str[i];
+		if(read_c == c)
+			first_char_reach = true;
+		
+		if(first_char_reach)
+		{
+			if(read_c == c)
+			{
+				second_char_reach = true;
+				second_char_at = i + 1;
+				break;
+			}
+			
+			if(r < readed_len-1)
+			{
+				readed[r] = read_c;
+				r = r + 1;
+			}
+		}
+	}
+	
+	// Set end of string character in read
+	readed[r] = '\0';
 }
 
 // Remove left '0's of a string (str: "000012gd00adw0" -> str: "12gd00adw0")
