@@ -15,6 +15,8 @@ bool str_is_number(const char* s);
 char* int_to_str(int int_in);
 bool str_is_number(const char* s);
 bool str_is_IP(const char* str);
+int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
+    const char* substr1, const char* substr2, char* str_output, const size_t str_output_len);
 
 /*************************************************************************************************/
 
@@ -410,6 +412,66 @@ bool str_is_IP(const char* str)
 	}
 
 	return is_ip;
+}
+
+// Get a substring between two substrings of a provided string
+// Results:
+//   >0 - Found at this start index position of input string
+//    0 - Not found
+//   -1 - Some of the provided arguments is invalid
+//   -2 - Found, but the provided output string length is not enough for store it
+int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
+    const char* substr1, const char* substr2, char* str_output, const size_t str_output_len)
+{
+    char* p1 = NULL;
+    char* p2 = NULL;
+    size_t pos1 = 0, pos2 = 0;
+    size_t i = 0, ii = 0;
+
+    // Check for valid arguments
+    if(str_input == NULL)
+        return 0;
+    if(str_input_len < 3)
+        return 0;
+    if(substr1 == NULL)
+        return 0;
+    if(strlen(substr1) == 0)
+        return 0;
+    if(substr2 == NULL)
+        return 0;
+    if(strlen(substr2) == 0)
+        return 0;
+
+    // Check for substrings and get index positions
+    p1 = strstr(str_input, substr1);
+    if(p1 == NULL)
+        return 0;
+    pos1 = (p1 - str_input) + strlen(substr1);
+    p2 = strstr(p1, substr2);
+    if(p2 == NULL)
+        return 0;
+    pos2 = p2 - str_input;
+    //pos2 = p2 - p1;
+
+    // Check if output string length is enough for the located substring
+    if(str_output_len <= pos2-pos1)
+        return -2;
+
+    // Copy substring value into output string
+    i = 0;
+    ii = pos1;
+    while(ii < pos2)
+    {
+        if(i >= str_output_len-1)
+            break;
+
+        str_output[i] = str_input[ii];
+        i = i + 1;
+        ii = ii + 1;
+    }
+    str_output[i] = '\0';
+
+    return pos1;
 }
 
 /*************************************************************************************************/
