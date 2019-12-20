@@ -11,9 +11,10 @@ size_t str_read_between_chars(char* str, const char c, char* readed, const size_
 bool str_read_line(char* str, char* readed=NULL, const bool preserve=false);
 void str_rm_left_zeros(char* str, char* readed=NULL);
 int str_to_int(const char* str_in);
+uint8_t get_json_param_string_val(char* json_str, char* key, char* value, const size_t value_len);
+uint8_t safe_atoi_u16(const char* in_str, const uint8_t in_str_len, uint16_t* out_int);
 bool str_is_number(const char* s);
 char* int_to_str(int int_in);
-bool str_is_number(const char* s);
 bool str_is_IP(const char* str);
 int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
     const char* substr1, const char* substr2, char* str_output, const size_t str_output_len);
@@ -338,6 +339,93 @@ int str_to_int(const char* str_in)
 		int_out = int_out * 10 + (str_in[i] - '0');
 
 	return int_out;
+}
+
+// Rudimentary Parser for json string parameter
+// Example: { "data" : "1234" } -> Get 1234
+// It doesn't support deep json structures (Unsupported: { "data": { subdata":1234 } })
+// It doesn't verify that all json string is correct (Uncheck: { "data": "1234" as}}df-g})
+uint8_t get_json_param_string_val(char* json_str, char* key, char* value, const size_t value_len)
+{
+    char* ptr;
+    uint32_t pos;
+    char key_delimited[32];
+
+    snprintf(key_delimited, 32, "\"%s\"", key);
+    ptr = strstr(json_str, key_delimited);
+    if(!ptr)
+        return false;
+    pos = ptr - json_str;
+    json_str = json_str + pos + strlen(key_delimited);
+
+    ptr = strstr(ptr, ":");
+    if(!ptr)
+        return false;
+    pos = ptr - json_str;
+    json_str = json_str + pos  + strlen(":");
+
+    ptr = strstr(ptr, "\"");
+    if(!ptr)
+        return false;
+    pos = ptr - json_str;
+    json_str = json_str + pos  + strlen("\"");
+
+    ptr = strstr(ptr+1, "\"");
+    if(!ptr)
+        return false;
+
+    ptr[0] = '\0';
+    for(uint32_t i = 0; i < strlen(json_str); i++)
+    {
+        if(i >= value_len)
+            break;
+        value[i] = json_str[i];
+    }
+
+    return true;
+}
+
+// Safe conversion a string number into uint16_t element
+// in_str_len - number of bytes of in_str[] without null terminated byte
+// Return: 0 Error, 1 OK
+uint8_t safe_atoi_u16(const char* in_str, const uint8_t in_str_len, uint16_t* out_int)
+{
+    size_t converted_num;
+    size_t multiplicator;
+
+    // Check if input str has less or more chars than expected int32_t range (1 to 3 chars)
+    if((in_str_len < 1) || (in_str_len > 6))
+        return 0;
+
+    // Check if input str is not terminated
+    if(in_str[in_str_len] != '\0')
+        return 0;
+
+    // Check if any of the character of the str is not a number
+    for(uint8_t i = 0; i < in_str_len; i++)
+    {
+        if(in_str[i] < '0' || in_str[i] > '9')
+            return 0;
+    }
+
+    // Create the int
+    converted_num = 0;
+    for(uint8_t i = 0; i < in_str_len; i++)
+    {
+        multiplicator = 1;
+        for(uint8_t ii = in_str_len-1-i; ii > 0; ii--)
+            multiplicator = multiplicator * 10;
+
+        converted_num = converted_num + (multiplicator * (in_str[i] - '0'));
+    }
+
+    // Check if number is higher than max uint16_t val
+    if(converted_num > 65535)
+        return 0;
+
+    // Get the converted number and return operation success
+    *out_int = (uint16_t)converted_num;
+    return 1;
 }
 
 // Check if a string is a number
