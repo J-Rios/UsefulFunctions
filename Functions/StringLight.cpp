@@ -18,6 +18,8 @@ char* int_to_str(int int_in);
 bool str_is_IP(const char* str);
 int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
     const char* substr1, const char* substr2, char* str_output, const size_t str_output_len);
+void cstr_lower(char* cstr, const size_t cstr_max_length);
+void cstr_upper(char* cstr, const size_t cstr_max_length);
 
 /*************************************************************************************************/
 
@@ -560,6 +562,98 @@ int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_le
     str_output[i] = '\0';
 
     return pos1;
+}
+
+void cstr_lower(char* cstr, const size_t cstr_max_length)
+{
+    char c;
+
+    for(size_t i = 0; i < cstr_max_length; i++)
+    {
+        c = cstr[i];
+
+        // Break if end of string charater has arrive
+        if(c == '\0')
+            break;
+
+        // Convert extected basic ascii upper to lower
+        switch(c)
+        {
+            case 'A': cstr[i] = 'a';
+            case 'B': cstr[i] = 'b';
+            case 'C': cstr[i] = 'c';
+            case 'D': cstr[i] = 'd';
+            case 'E': cstr[i] = 'e';
+            case 'F': cstr[i] = 'f';
+            case 'G': cstr[i] = 'g';
+            case 'H': cstr[i] = 'h';
+            case 'I': cstr[i] = 'i';
+            case 'J': cstr[i] = 'j';
+            case 'K': cstr[i] = 'k';
+            case 'L': cstr[i] = 'l';
+            case 'M': cstr[i] = 'm';
+            case 'N': cstr[i] = 'n';
+            case 'O': cstr[i] = 'o';
+            case 'P': cstr[i] = 'p';
+            case 'Q': cstr[i] = 'q';
+            case 'R': cstr[i] = 'r';
+            case 'S': cstr[i] = 's';
+            case 'T': cstr[i] = 't';
+            case 'U': cstr[i] = 'u';
+            case 'V': cstr[i] = 'v';
+            case 'W': cstr[i] = 'w';
+            case 'X': cstr[i] = 'x';
+            case 'Y': cstr[i] = 'y';
+            case 'Z': cstr[i] = 'z';
+            default: break;
+        }
+    }
+}
+
+void cstr_upper(char* cstr, const size_t cstr_max_length)
+{
+    char c;
+
+    for(size_t i = 0; i < cstr_max_length; i++)
+    {
+        c = cstr[i];
+
+        // Break if end of string charater has arrive
+        if(c == '\0')
+            break;
+
+        // Convert extected basic ascii upper to lower
+        switch(c)
+        {
+            case 'a': cstr[i] = 'A';
+            case 'b': cstr[i] = 'B';
+            case 'c': cstr[i] = 'C';
+            case 'd': cstr[i] = 'D';
+            case 'e': cstr[i] = 'E';
+            case 'f': cstr[i] = 'F';
+            case 'g': cstr[i] = 'G';
+            case 'h': cstr[i] = 'H';
+            case 'i': cstr[i] = 'I';
+            case 'j': cstr[i] = 'J';
+            case 'k': cstr[i] = 'K';
+            case 'l': cstr[i] = 'L';
+            case 'm': cstr[i] = 'M';
+            case 'n': cstr[i] = 'N';
+            case 'o': cstr[i] = 'O';
+            case 'p': cstr[i] = 'P';
+            case 'q': cstr[i] = 'Q';
+            case 'r': cstr[i] = 'R';
+            case 's': cstr[i] = 'S';
+            case 't': cstr[i] = 'T';
+            case 'u': cstr[i] = 'U';
+            case 'v': cstr[i] = 'V';
+            case 'w': cstr[i] = 'W';
+            case 'x': cstr[i] = 'X';
+            case 'y': cstr[i] = 'Y';
+            case 'z': cstr[i] = 'Z';
+            default: break;
+        }
+    }
 }
 
 /*************************************************************************************************/
