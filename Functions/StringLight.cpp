@@ -1,6 +1,15 @@
 
 /*************************************************************************************************/
 
+/*** Defines ***/
+
+#define RC_OK     0
+#define RC_BAD    1
+
+#define MAC_ADDR_MAX_LEN 13
+
+/*************************************************************************************************/
+
 /*** Interface ***/
 
 void str_rm_char(char* str, const char c_remove, char* readed=NULL);
@@ -20,6 +29,7 @@ int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_le
     const char* substr1, const char* substr2, char* str_output, const size_t str_output_len);
 void cstr_lower(char* cstr, const size_t cstr_max_length);
 void cstr_upper(char* cstr, const size_t cstr_max_length);
+uint8_t is_valid_mac_address(const char* mac_address);
 
 /*************************************************************************************************/
 
@@ -654,6 +664,31 @@ void cstr_upper(char* cstr, const size_t cstr_max_length)
             default: break;
         }
     }
+}
+
+uint8_t is_valid_mac_address(const char* mac_address)
+{
+    char c;
+
+    // Check if has the expected length of a MAC Address
+    if(strlen(mac_address) != MAC_ADDR_MAX_LEN-1)
+        return RC_BAD;
+
+    // Check if has valid characters of a MAC Address (0-9/a-f)
+    for(uint8_t i = 0; i < MAC_ADDR_MAX_LEN; i++)
+    {
+        c = mac_address[i];
+        if((c < '0') || (c > '9'))
+        {
+            if((c != 'a') && (c != 'b') && (c != 'c') && (c != 'd') && (c != 'e') && (c != 'f'))
+            {
+                if((c != 'A') && (c != 'B') && (c != 'C') && (c != 'D') && (c != 'E') && (c != 'F'))
+                    return RC_BAD;
+            }
+        }
+    }
+
+    return RC_OK;
 }
 
 /*************************************************************************************************/
