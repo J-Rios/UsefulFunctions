@@ -29,7 +29,8 @@ int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_le
     const char* substr1, const char* substr2, char* str_output, const size_t str_output_len);
 void cstr_lower(char* cstr, const size_t cstr_max_length);
 void cstr_upper(char* cstr, const size_t cstr_max_length);
-uint8_t is_valid_mac_address(const char* mac_address);
+int8_t is_valid_mac_address(const char* mac_address);
+int8_t cstr_is_hex(char* str_in, const size_t str_in_len);
 
 /*************************************************************************************************/
 
@@ -666,7 +667,7 @@ void cstr_upper(char* cstr, const size_t cstr_max_length)
     }
 }
 
-uint8_t is_valid_mac_address(const char* mac_address)
+int8_t is_valid_mac_address(const char* mac_address)
 {
     char c;
 
@@ -683,6 +684,31 @@ uint8_t is_valid_mac_address(const char* mac_address)
             if((c != 'a') && (c != 'b') && (c != 'c') && (c != 'd') && (c != 'e') && (c != 'f'))
             {
                 if((c != 'A') && (c != 'B') && (c != 'C') && (c != 'D') && (c != 'E') && (c != 'F'))
+                    return RC_BAD;
+            }
+        }
+    }
+
+    return RC_OK;
+}
+
+// Check if string is a valid hexadecimal value
+int8_t cstr_is_hex(char* str_in, const size_t str_in_len)
+{
+    for(size_t i = 0; i < str_in_len; i++)
+    {
+        // Check ascii table positions out of 0-9/a-f/A-F character ranges
+        if(str_in[i] < '0')
+            return RC_BAD;
+        if(str_in[i] > '9')
+        {
+            if(str_in[i] < 'A')
+                return RC_BAD;
+            if(str_in[i] > 'F')
+            {
+                if(str_in[i] < 'a')
+                    return RC_BAD;
+                if(str_in[i] > 'f')
                     return RC_BAD;
             }
         }
