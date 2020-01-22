@@ -590,32 +590,32 @@ void cstr_lower(char* cstr, const size_t cstr_max_length)
         // Convert extected basic ascii upper to lower
         switch(c)
         {
-            case 'A': cstr[i] = 'a';
-            case 'B': cstr[i] = 'b';
-            case 'C': cstr[i] = 'c';
-            case 'D': cstr[i] = 'd';
-            case 'E': cstr[i] = 'e';
-            case 'F': cstr[i] = 'f';
-            case 'G': cstr[i] = 'g';
-            case 'H': cstr[i] = 'h';
-            case 'I': cstr[i] = 'i';
-            case 'J': cstr[i] = 'j';
-            case 'K': cstr[i] = 'k';
-            case 'L': cstr[i] = 'l';
-            case 'M': cstr[i] = 'm';
-            case 'N': cstr[i] = 'n';
-            case 'O': cstr[i] = 'o';
-            case 'P': cstr[i] = 'p';
-            case 'Q': cstr[i] = 'q';
-            case 'R': cstr[i] = 'r';
-            case 'S': cstr[i] = 's';
-            case 'T': cstr[i] = 't';
-            case 'U': cstr[i] = 'u';
-            case 'V': cstr[i] = 'v';
-            case 'W': cstr[i] = 'w';
-            case 'X': cstr[i] = 'x';
-            case 'Y': cstr[i] = 'y';
-            case 'Z': cstr[i] = 'z';
+            case 'A': cstr[i] = 'a'; break;
+            case 'B': cstr[i] = 'b'; break;
+            case 'C': cstr[i] = 'c'; break;
+            case 'D': cstr[i] = 'd'; break;
+            case 'E': cstr[i] = 'e'; break;
+            case 'F': cstr[i] = 'f'; break;
+            case 'G': cstr[i] = 'g'; break;
+            case 'H': cstr[i] = 'h'; break;
+            case 'I': cstr[i] = 'i'; break;
+            case 'J': cstr[i] = 'j'; break;
+            case 'K': cstr[i] = 'k'; break;
+            case 'L': cstr[i] = 'l'; break;
+            case 'M': cstr[i] = 'm'; break;
+            case 'N': cstr[i] = 'n'; break;
+            case 'O': cstr[i] = 'o'; break;
+            case 'P': cstr[i] = 'p'; break;
+            case 'Q': cstr[i] = 'q'; break;
+            case 'R': cstr[i] = 'r'; break;
+            case 'S': cstr[i] = 's'; break;
+            case 'T': cstr[i] = 't'; break;
+            case 'U': cstr[i] = 'u'; break;
+            case 'V': cstr[i] = 'v'; break;
+            case 'W': cstr[i] = 'w'; break;
+            case 'X': cstr[i] = 'x'; break;
+            case 'Y': cstr[i] = 'y'; break;
+            case 'Z': cstr[i] = 'z'; break;
             default: break;
         }
     }
@@ -636,32 +636,32 @@ void cstr_upper(char* cstr, const size_t cstr_max_length)
         // Convert extected basic ascii upper to lower
         switch(c)
         {
-            case 'a': cstr[i] = 'A';
-            case 'b': cstr[i] = 'B';
-            case 'c': cstr[i] = 'C';
-            case 'd': cstr[i] = 'D';
-            case 'e': cstr[i] = 'E';
-            case 'f': cstr[i] = 'F';
-            case 'g': cstr[i] = 'G';
-            case 'h': cstr[i] = 'H';
-            case 'i': cstr[i] = 'I';
-            case 'j': cstr[i] = 'J';
-            case 'k': cstr[i] = 'K';
-            case 'l': cstr[i] = 'L';
-            case 'm': cstr[i] = 'M';
-            case 'n': cstr[i] = 'N';
-            case 'o': cstr[i] = 'O';
-            case 'p': cstr[i] = 'P';
-            case 'q': cstr[i] = 'Q';
-            case 'r': cstr[i] = 'R';
-            case 's': cstr[i] = 'S';
-            case 't': cstr[i] = 'T';
-            case 'u': cstr[i] = 'U';
-            case 'v': cstr[i] = 'V';
-            case 'w': cstr[i] = 'W';
-            case 'x': cstr[i] = 'X';
-            case 'y': cstr[i] = 'Y';
-            case 'z': cstr[i] = 'Z';
+            case 'a': cstr[i] = 'A'; break;
+            case 'b': cstr[i] = 'B'; break;
+            case 'c': cstr[i] = 'C'; break;
+            case 'd': cstr[i] = 'D'; break;
+            case 'e': cstr[i] = 'E'; break;
+            case 'f': cstr[i] = 'F'; break;
+            case 'g': cstr[i] = 'G'; break;
+            case 'h': cstr[i] = 'H'; break;
+            case 'i': cstr[i] = 'I'; break;
+            case 'j': cstr[i] = 'J'; break;
+            case 'k': cstr[i] = 'K'; break;
+            case 'l': cstr[i] = 'L'; break;
+            case 'm': cstr[i] = 'M'; break;
+            case 'n': cstr[i] = 'N'; break;
+            case 'o': cstr[i] = 'O'; break;
+            case 'p': cstr[i] = 'P'; break;
+            case 'q': cstr[i] = 'Q'; break;
+            case 'r': cstr[i] = 'R'; break;
+            case 's': cstr[i] = 'S'; break;
+            case 't': cstr[i] = 'T'; break;
+            case 'u': cstr[i] = 'U'; break;
+            case 'v': cstr[i] = 'V'; break;
+            case 'w': cstr[i] = 'W'; break;
+            case 'x': cstr[i] = 'X'; break;
+            case 'y': cstr[i] = 'Y'; break;
+            case 'z': cstr[i] = 'Z'; break;
             default: break;
         }
     }
