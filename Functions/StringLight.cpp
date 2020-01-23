@@ -544,15 +544,16 @@ int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_le
         return 0;
 
     // Check for substrings and get index positions
-    p1 = strstr(str_input, substr1);
+    p1 = strstr((char*)str_input, (char*)substr1);
     if(p1 == NULL)
         return 0;
-    pos1 = (p1 - str_input) + strlen(substr1);
-    p2 = strstr(p1, substr2);
+    p1 = p1 + strlen(substr1);
+    pos1 = (p1 - str_input) - 1;
+    p2 = strstr(p1, (char*)substr2);
     if(p2 == NULL)
         return 0;
-    pos2 = p2 - str_input;
-    //pos2 = p2 - p1;
+    p2 = p2 + strlen(substr2);
+    pos2 = (p2 - str_input) - 1;
 
     // Check if output string length is enough for the located substring
     if(str_output_len <= pos2-pos1)
@@ -560,7 +561,7 @@ int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_le
 
     // Copy substring value into output string
     i = 0;
-    ii = pos1;
+    ii = pos1+1;
     while(ii < pos2)
     {
         if(i >= str_output_len-1)
