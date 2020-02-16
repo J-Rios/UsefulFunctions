@@ -15,13 +15,11 @@ Buttons Button;
 void setup()
 {
     Serial.begin(115200);
-    Button.setup(GPIO_BUTTON, INPUT_PULLUP);
+    Button.setup(GPIO_BUTTON, INPUT, HIGH);
 }
 
 void loop()
 {
     if(Button.pressed())
         Serial.println("Button pressed");
-    else if(Button.released())
-        Serial.println("Button released");
 }

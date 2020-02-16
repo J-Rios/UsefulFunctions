@@ -40,7 +40,7 @@ class Buttons
         Buttons(void);
 
         // Initialize Button GPIO as normal/pulldown/pullup input
-        void setup(const uint8_t pin, const uint8_t pull_up);
+        void setup(const uint8_t pin, const uint8_t mode, const uint8_t logic_level=1);
 
         // Read the button digital logic level
         uint8_t read(void);
@@ -56,20 +56,20 @@ class Buttons
         // button again
         uint8_t pressed(void);
 
-        // Check if button has been pressed
-        // On button release, it return 1, but then it returns 0 until we press and release the 
-        // button again
-        uint8_t released(void);
-
 
     private:
         // Private attributes
-        uint8_t _pin, _was_pressed, _pull_up;
+        uint8_t _pin, _was_pressed, _logic_level;
         uint32_t _t0;
 
         // Check if debounce time is completed
         // Used to know if we are able to read again from the GPIO pin
-        uint8_t is_time_to_read(void);
+        uint8_t is_time_to_read(const uint8_t force=0);
+
+        // Check if button has been released
+        // On button release, it return 1, but then it returns 0 until we press and release the 
+        // button again
+        uint8_t released(void);
 
 };
 

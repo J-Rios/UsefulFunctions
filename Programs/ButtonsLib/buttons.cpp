@@ -48,24 +48,24 @@ Buttons::Buttons(void)
     // If library user doesn't call setup() method to configure it
     _pin = 2;
     _was_pressed = 0;
-    _pull_up = 1;
+    _logic_level = 1;
 }
 
 /**************************************************************************************************/
 
 /* Public Methods */
 
-// Initialize Button GPIO as normal/pulldown/pullup input
-void Buttons::setup(const uint8_t pin, const uint8_t pull_up)
+// Initialize Button GPIO as normal/pulldown/pullup input and set pressed logic
+void Buttons::setup(const uint8_t pin, const uint8_t mode, const uint8_t logic_level)
 {
     _pin = pin;
-    _pinMode(_pin, pull_up);
-    _was_pressed = _digitalRead(_pin);
+    _pinMode(_pin, mode);
+    _logic_level = logic_level;
 
-    if(pull_up)
-        _pull_up = 1;
+    if(_logic_level)
+        _was_pressed = !_digitalRead(_pin);
     else
-        _pull_up = 0;
+        _was_pressed = _digitalRead(_pin);
 
     _t0 = _millis();
 }
@@ -79,13 +79,13 @@ uint8_t Buttons::read(void)
 // Check if button is currently pressed
 uint8_t Buttons::is_pressed(void)
 {
-    return (read() == !_pull_up);
+    return (read() == !_logic_level);
 }
 
 // Check if button is currently released
 uint8_t Buttons::is_released(void)
 {
-    return (read() == _pull_up);
+    return (read() == _logic_level);
 }
 
 // Check if button has been pressed
@@ -94,7 +94,10 @@ uint8_t Buttons::pressed(void)
 {
     // Ignore if button is already pressed or it is still in debounce time
     if(_was_pressed)
+    {
+        released();
         return 0;
+    }
     if(!is_time_to_read())
         return 0;
 
@@ -113,7 +116,10 @@ uint8_t Buttons::released(void)
 {
     // Ignore if button is already released or it is still in debounce time
     if(!_was_pressed)
+    {
+        pressed();
         return 0;
+    }
     if(!is_time_to_read())
         return 0;
 
@@ -132,8 +138,15 @@ uint8_t Buttons::released(void)
 
 // Check if debounce time is completed
 // Used to know if we are able to read again from the GPIO pin
-uint8_t Buttons::is_time_to_read(void)
+// force argument allows to force the read
+uint8_t Buttons::is_time_to_read(const uint8_t force)
 {
+    if(force)
+    {
+        _t0 = _millis();
+        return 1;
+    }
+
     // Check if debounce time has been reach
     if(_millis() - _t0 >= TIME_TO_READ_MS)
     {
