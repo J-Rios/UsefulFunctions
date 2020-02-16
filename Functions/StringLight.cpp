@@ -1,6 +1,15 @@
 
 /*************************************************************************************************/
 
+/*** Defines ***/
+
+#define RC_OK     0
+#define RC_BAD    1
+
+#define MAC_ADDR_MAX_LEN 13
+
+/*************************************************************************************************/
+
 /*** Interface ***/
 
 void str_rm_char(char* str, const char c_remove, char* readed=NULL);
@@ -11,10 +20,17 @@ size_t str_read_between_chars(char* str, const char c, char* readed, const size_
 bool str_read_line(char* str, char* readed=NULL, const bool preserve=false);
 void str_rm_left_zeros(char* str, char* readed=NULL);
 int str_to_int(const char* str_in);
+uint8_t get_json_param_string_val(char* json_str, char* key, char* value, const size_t value_len);
+uint8_t safe_atoi_u16(const char* in_str, const uint8_t in_str_len, uint16_t* out_int);
 bool str_is_number(const char* s);
 char* int_to_str(int int_in);
-bool str_is_number(const char* s);
 bool str_is_IP(const char* str);
+int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
+    const char* substr1, const char* substr2, char* str_output, const size_t str_output_len);
+void cstr_lower(char* cstr, const size_t cstr_max_length);
+void cstr_upper(char* cstr, const size_t cstr_max_length);
+int8_t is_valid_mac_address(const char* mac_address);
+int8_t cstr_is_hex(char* str_in, const size_t str_in_len);
 
 /*************************************************************************************************/
 
@@ -338,6 +354,93 @@ int str_to_int(const char* str_in)
 	return int_out;
 }
 
+// Rudimentary Parser for json string parameter
+// Example: { "data" : "1234" } -> Get 1234
+// It doesn't support deep json structures (Unsupported: { "data": { subdata":1234 } })
+// It doesn't verify that all json string is correct (Uncheck: { "data": "1234" as}}df-g})
+uint8_t get_json_param_string_val(char* json_str, char* key, char* value, const size_t value_len)
+{
+    char* ptr;
+    uint32_t pos;
+    char key_delimited[32];
+
+    snprintf(key_delimited, 32, "\"%s\"", key);
+    ptr = strstr(json_str, key_delimited);
+    if(!ptr)
+        return false;
+    pos = ptr - json_str;
+    json_str = json_str + pos + strlen(key_delimited);
+
+    ptr = strstr(ptr, ":");
+    if(!ptr)
+        return false;
+    pos = ptr - json_str;
+    json_str = json_str + pos  + strlen(":");
+
+    ptr = strstr(ptr, "\"");
+    if(!ptr)
+        return false;
+    pos = ptr - json_str;
+    json_str = json_str + pos  + strlen("\"");
+
+    ptr = strstr(ptr+1, "\"");
+    if(!ptr)
+        return false;
+
+    ptr[0] = '\0';
+    for(uint32_t i = 0; i < strlen(json_str); i++)
+    {
+        if(i >= value_len)
+            break;
+        value[i] = json_str[i];
+    }
+
+    return true;
+}
+
+// Safe conversion a string number into uint16_t element
+// in_str_len - number of bytes of in_str[] without null terminated byte
+// Return: 0 Error, 1 OK
+uint8_t safe_atoi_u16(const char* in_str, const uint8_t in_str_len, uint16_t* out_int)
+{
+    size_t converted_num;
+    size_t multiplicator;
+
+    // Check if input str has less or more chars than expected int32_t range (1 to 3 chars)
+    if((in_str_len < 1) || (in_str_len > 6))
+        return 0;
+
+    // Check if input str is not terminated
+    if(in_str[in_str_len] != '\0')
+        return 0;
+
+    // Check if any of the character of the str is not a number
+    for(uint8_t i = 0; i < in_str_len; i++)
+    {
+        if(in_str[i] < '0' || in_str[i] > '9')
+            return 0;
+    }
+
+    // Create the int
+    converted_num = 0;
+    for(uint8_t i = 0; i < in_str_len; i++)
+    {
+        multiplicator = 1;
+        for(uint8_t ii = in_str_len-1-i; ii > 0; ii--)
+            multiplicator = multiplicator * 10;
+
+        converted_num = converted_num + (multiplicator * (in_str[i] - '0'));
+    }
+
+    // Check if number is higher than max uint16_t val
+    if(converted_num > 65535)
+        return 0;
+
+    // Get the converted number and return operation success
+    *out_int = (uint16_t)converted_num;
+    return 1;
+}
+
 // Check if a string is a number
 bool str_is_number(const char* s)
 {
@@ -410,6 +513,211 @@ bool str_is_IP(const char* str)
 	}
 
 	return is_ip;
+}
+
+// Get a substring between two substrings of a provided string
+// Results:
+//   >0 - Found at this start index position of input string
+//    0 - Not found
+//   -1 - Some of the provided arguments is invalid
+//   -2 - Found, but the provided output string length is not enough for store it
+int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
+    const char* substr1, const char* substr2, char* str_output, const size_t str_output_len)
+{
+    char* p1 = NULL;
+    char* p2 = NULL;
+    size_t pos1 = 0, pos2 = 0;
+    size_t i = 0, ii = 0;
+
+    // Check for valid arguments
+    if(str_input == NULL)
+        return 0;
+    if(str_input_len == 0)
+        return 0;
+    if(substr1 == NULL)
+        return 0;
+    if(strlen(substr1) == 0)
+        return 0;
+    if(substr2 == NULL)
+        return 0;
+    if(strlen(substr2) == 0)
+        return 0;
+
+    // Check for substrings and get index positions
+    p1 = strstr((char*)str_input, substr1);
+    if(p1 == NULL)
+        return 0;
+    p1 = p1 + strlen(substr1);
+    pos1 = (p1 - str_input) - 1;
+    p2 = strstr(p1, substr2);
+    if(p2 == NULL)
+        return 0;
+    pos2 = pos1 + (p2 - p1) + 1;
+
+    // Check if output string length is enough for the located substring
+    if(str_output_len <= pos2-pos1)
+        return -2;
+
+    // Copy substring value into output string
+    i = 0;
+    ii = pos1+1;
+    while(ii < pos2)
+    {
+        if(i >= str_output_len-1)
+            break;
+
+        str_output[i] = str_input[ii];
+        i = i + 1;
+        ii = ii + 1;
+    }
+    str_output[i] = '\0';
+
+    if(str_output[0] != '\0')
+        pos1 = pos1+1;
+
+    return pos1;
+}
+
+void cstr_lower(char* cstr, const size_t cstr_max_length)
+{
+    char c;
+
+    for(size_t i = 0; i < cstr_max_length; i++)
+    {
+        c = cstr[i];
+
+        // Break if end of string charater has arrive
+        if(c == '\0')
+            break;
+
+        // Convert extected basic ascii upper to lower
+        switch(c)
+        {
+            case 'A': cstr[i] = 'a'; break;
+            case 'B': cstr[i] = 'b'; break;
+            case 'C': cstr[i] = 'c'; break;
+            case 'D': cstr[i] = 'd'; break;
+            case 'E': cstr[i] = 'e'; break;
+            case 'F': cstr[i] = 'f'; break;
+            case 'G': cstr[i] = 'g'; break;
+            case 'H': cstr[i] = 'h'; break;
+            case 'I': cstr[i] = 'i'; break;
+            case 'J': cstr[i] = 'j'; break;
+            case 'K': cstr[i] = 'k'; break;
+            case 'L': cstr[i] = 'l'; break;
+            case 'M': cstr[i] = 'm'; break;
+            case 'N': cstr[i] = 'n'; break;
+            case 'O': cstr[i] = 'o'; break;
+            case 'P': cstr[i] = 'p'; break;
+            case 'Q': cstr[i] = 'q'; break;
+            case 'R': cstr[i] = 'r'; break;
+            case 'S': cstr[i] = 's'; break;
+            case 'T': cstr[i] = 't'; break;
+            case 'U': cstr[i] = 'u'; break;
+            case 'V': cstr[i] = 'v'; break;
+            case 'W': cstr[i] = 'w'; break;
+            case 'X': cstr[i] = 'x'; break;
+            case 'Y': cstr[i] = 'y'; break;
+            case 'Z': cstr[i] = 'z'; break;
+            default: break;
+        }
+    }
+}
+
+void cstr_upper(char* cstr, const size_t cstr_max_length)
+{
+    char c;
+
+    for(size_t i = 0; i < cstr_max_length; i++)
+    {
+        c = cstr[i];
+
+        // Break if end of string charater has arrive
+        if(c == '\0')
+            break;
+
+        // Convert extected basic ascii upper to lower
+        switch(c)
+        {
+            case 'a': cstr[i] = 'A'; break;
+            case 'b': cstr[i] = 'B'; break;
+            case 'c': cstr[i] = 'C'; break;
+            case 'd': cstr[i] = 'D'; break;
+            case 'e': cstr[i] = 'E'; break;
+            case 'f': cstr[i] = 'F'; break;
+            case 'g': cstr[i] = 'G'; break;
+            case 'h': cstr[i] = 'H'; break;
+            case 'i': cstr[i] = 'I'; break;
+            case 'j': cstr[i] = 'J'; break;
+            case 'k': cstr[i] = 'K'; break;
+            case 'l': cstr[i] = 'L'; break;
+            case 'm': cstr[i] = 'M'; break;
+            case 'n': cstr[i] = 'N'; break;
+            case 'o': cstr[i] = 'O'; break;
+            case 'p': cstr[i] = 'P'; break;
+            case 'q': cstr[i] = 'Q'; break;
+            case 'r': cstr[i] = 'R'; break;
+            case 's': cstr[i] = 'S'; break;
+            case 't': cstr[i] = 'T'; break;
+            case 'u': cstr[i] = 'U'; break;
+            case 'v': cstr[i] = 'V'; break;
+            case 'w': cstr[i] = 'W'; break;
+            case 'x': cstr[i] = 'X'; break;
+            case 'y': cstr[i] = 'Y'; break;
+            case 'z': cstr[i] = 'Z'; break;
+            default: break;
+        }
+    }
+}
+
+int8_t is_valid_mac_address(const char* mac_address)
+{
+    char c;
+
+    // Check if has the expected length of a MAC Address
+    if(strlen(mac_address) != MAC_ADDR_MAX_LEN-1)
+        return RC_BAD;
+
+    // Check if has valid characters of a MAC Address (0-9/a-f)
+    for(uint8_t i = 0; i < MAC_ADDR_MAX_LEN; i++)
+    {
+        c = mac_address[i];
+        if((c < '0') || (c > '9'))
+        {
+            if((c != 'a') && (c != 'b') && (c != 'c') && (c != 'd') && (c != 'e') && (c != 'f'))
+            {
+                if((c != 'A') && (c != 'B') && (c != 'C') && (c != 'D') && (c != 'E') && (c != 'F'))
+                    return RC_BAD;
+            }
+        }
+    }
+
+    return RC_OK;
+}
+
+// Check if string is a valid hexadecimal value
+int8_t cstr_is_hex(char* str_in, const size_t str_in_len)
+{
+    for(size_t i = 0; i < str_in_len; i++)
+    {
+        // Check ascii table positions out of 0-9/a-f/A-F character ranges
+        if(str_in[i] < '0')
+            return RC_BAD;
+        if(str_in[i] > '9')
+        {
+            if(str_in[i] < 'A')
+                return RC_BAD;
+            if(str_in[i] > 'F')
+            {
+                if(str_in[i] < 'a')
+                    return RC_BAD;
+                if(str_in[i] > 'f')
+                    return RC_BAD;
+            }
+        }
+    }
+
+    return RC_OK;
 }
 
 /*************************************************************************************************/
