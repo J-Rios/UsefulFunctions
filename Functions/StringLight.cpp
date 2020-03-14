@@ -12,6 +12,7 @@
 
 /*** Interface ***/
 
+uint32_t cstr_count_char(const char* str_in, const size_t str_in_len, const char c);
 void str_rm_char(char* str, const char c_remove, char* readed=NULL);
 bool str_contains(const char* s1, const char* s2);
 bool str_read_until_char(char* str, const char c, char* readed=NULL, const bool preserve=false);
@@ -22,7 +23,7 @@ void str_rm_left_zeros(char* str, char* readed=NULL);
 int str_to_int(const char* str_in);
 uint8_t get_json_param_string_val(char* json_str, char* key, char* value, const size_t value_len);
 uint8_t safe_atoi_u16(const char* in_str, const uint8_t in_str_len, uint16_t* out_int);
-bool str_is_number(const char* s);
+uint8_t cstr_is_num(const char* str_in, const size_t str_in_len);
 char* int_to_str(int int_in);
 bool str_is_IP(const char* str);
 int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_len, 
@@ -31,10 +32,29 @@ void cstr_lower(char* cstr, const size_t cstr_max_length);
 void cstr_upper(char* cstr, const size_t cstr_max_length);
 int8_t is_valid_mac_address(const char* mac_address);
 int8_t cstr_is_hex(char* str_in, const size_t str_in_len);
+int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* words[], 
+    size_t* num_words, const size_t max_num_words, const size_t max_word_length);
 
 /*************************************************************************************************/
 
 /*** Implementation ***/
+
+// Count the number of a character inside a string
+uint32_t cstr_count_char(const char* str_in, const size_t str_in_len, const char c)
+{
+    uint32_t n = 0;
+
+    if(str_in_len == 0)
+        return 0;
+
+    for(size_t i = 0; i < str_in_len; i++)
+    {
+        if(str_in[i] == c)
+            n = n + 1;
+    }
+
+    return n;
+}
 
 // Remove all specific char from a string (str: "1 2 3 4 5" -> remove ' ' -> str: "12345")
 void str_rm_char(char* str, const char c_remove, char* readed)
@@ -441,23 +461,19 @@ uint8_t safe_atoi_u16(const char* in_str, const uint8_t in_str_len, uint16_t* ou
     return 1;
 }
 
-// Check if a string is a number
-bool str_is_number(const char* s)
+// Check if a string is a valid decimal number
+uint8_t cstr_is_num(const char* str_in, const size_t str_in_len)
 {
-	bool is_number = true;
+    if(str_in_len == 0)
+        return 0;
 
-	while(*s)
-	{
-		if((*s < '0') || (*s > '9'))
-		{
-			is_number = false;
-			break;
-		}
-		else
-			s++;
-	}
+    for(size_t i = 0; i < str_in_len; i++)
+    {
+        if((str_in[i] < '0') || (str_in[i] > '9'))
+            return 0;
+    }
 
-	return is_number;
+    return 1;
 }
 
 // Check if a string has a valid IP format
@@ -716,6 +732,62 @@ int8_t cstr_is_hex(char* str_in, const size_t str_in_len)
             }
         }
     }
+
+    return RC_OK;
+}
+
+// Split a string into array of strings for each word
+int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* words[], 
+    size_t* num_words, const size_t max_num_words, const size_t max_word_length)
+{
+    size_t i = 0;
+    size_t ii = 0;
+    size_t iii = 0;
+
+    // Check if provided input string length is 0
+    if(str_in_len == 0)
+        return RC_INVALID_INPUT;
+
+    while(i < str_in_len)
+    {
+        // Space character detected, close actual word and increase index to next one
+        if(str_in[i] == ' ')
+        {
+            words[iii][ii] = '\0';
+            i = i + 1;
+            ii = 0;
+
+            // If reached max number of words
+            iii = iii + 1;
+            if(iii >= max_num_words)
+            {
+                *num_words = iii;
+                return RC_BAD;
+            }
+
+            continue;
+        }
+
+        // Store actual character in actual word
+        words[iii][ii] = str_in[i];
+        
+        // If end of string reach, close actual word
+        i = i + 1;
+        if(i >= str_in_len)
+            words[iii][ii] = '\0';
+
+        // If reached word max length
+        ii = ii + 1;
+        if(ii >= max_word_length)
+        {
+            words[iii][max_word_length-1] = '\0';
+            *num_words = iii;
+            return RC_BAD;
+        }
+    }
+
+    // Set detected number of words
+    *num_words = iii;
 
     return RC_OK;
 }
