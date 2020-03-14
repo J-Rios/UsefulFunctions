@@ -13,6 +13,7 @@
 /*** Interface ***/
 
 uint32_t cstr_count_char(const char* str_in, const size_t str_in_len, const char c);
+uint32_t cstr_count_words(const char* str_in, const size_t str_in_len);
 void str_rm_char(char* str, const char c_remove, char* readed=NULL);
 bool str_contains(const char* s1, const char* s2);
 bool str_read_until_char(char* str, const char c, char* readed=NULL, const bool preserve=false);
@@ -51,6 +52,35 @@ uint32_t cstr_count_char(const char* str_in, const size_t str_in_len, const char
     {
         if(str_in[i] == c)
             n = n + 1;
+    }
+
+    return n;
+}
+
+// Count the number of words inside a string
+uint32_t cstr_count_words(const char* str_in, const size_t str_in_len)
+{
+    uint32_t n = 1;
+
+    // Check for character occurrences
+    for(size_t i = 1; i < str_in_len; i++)
+    {
+        // Check if string is empty
+        if(str_in[i-1] == '\0')
+            return 0;
+
+        // Check if pattern "X Y", "X\rY" or "X\nY" does not meet
+        if((str_in[i] != ' ') || (str_in[i] != '\r') || (str_in[i] != '\n'))
+            continue;
+        if((str_in[i-1] == ' ') || (str_in[i-1] == '\r') || (str_in[i-1] == '\n'))
+            continue;
+        if((str_in[i+1] == ' ') || (str_in[i+1] == '\r') || (str_in[i+1] == '\n'))
+            continue;
+        if(str_in[i+1] == '\0')
+            continue;
+
+        // Pattern detected, increase word count
+        n = n + 1;
     }
 
     return n;
