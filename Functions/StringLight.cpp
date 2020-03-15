@@ -62,15 +62,19 @@ uint32_t cstr_count_words(const char* str_in, const size_t str_in_len)
 {
     uint32_t n = 1;
 
+    // Check if string is empty
+    if(str_in[0] == '\0')
+        return 0;
+
     // Check for character occurrences
     for(size_t i = 1; i < str_in_len; i++)
     {
-        // Check if string is empty
-        if(str_in[i-1] == '\0')
-            return 0;
+        // Check if end of string detected
+        if(str_in[i] == '\0')
+            break;
 
         // Check if pattern "X Y", "X\rY" or "X\nY" does not meet
-        if((str_in[i] != ' ') || (str_in[i] != '\r') || (str_in[i] != '\n'))
+        if((str_in[i] != ' ') && (str_in[i] != '\r') && (str_in[i] != '\n'))
             continue;
         if((str_in[i-1] == ' ') || (str_in[i-1] == '\r') || (str_in[i-1] == '\n'))
             continue;
