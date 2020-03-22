@@ -3,8 +3,9 @@
 
 /*** Defines ***/
 
-#define RC_OK     0
-#define RC_BAD    1
+#define RC_OK             0
+#define RC_BAD           -1
+#define RC_INVALID_INPUT -2
 
 #define MAC_ADDR_MAX_LEN 13
 
@@ -35,6 +36,9 @@ int8_t is_valid_mac_address(const char* mac_address);
 int8_t cstr_is_hex(char* str_in, const size_t str_in_len);
 int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* words[], 
     size_t* num_words, const size_t max_num_words, const size_t max_word_length);
+int8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base);
+int8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base);
+int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base);
 
 /*************************************************************************************************/
 
@@ -768,6 +772,68 @@ int8_t cstr_is_hex(char* str_in, const size_t str_in_len)
     }
 
     return RC_OK;
+}
+
+// Convert string into unsigned 8 bytes value
+int8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base)
+{
+    return cstr_string_to_u32(str_in, str_in_len, (uint32_t*)value_out, base);
+}
+
+// Convert string into unsigned 16 bytes value
+int8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base)
+{
+    return cstr_string_to_u32(str_in, str_in_len, (uint32_t*)value_out, base);
+}
+
+// Convert string into unsigned 32 bytes value
+int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base)
+{
+    char* ptr = str_in;
+	uint8_t digit;
+
+	*value_out = 0;
+
+    // Check for hexadecimal "0x" bytes and go through it
+    if(base == 16)
+    {
+        if((ptr[1] == 'x') || (ptr[1] == 'X'))
+        {
+            if(str_in_len < 3)
+                return RC_INVALID_INPUT;
+            ptr = ptr + 2;
+            str_in_len = str_in_len - 2;
+        }
+    }
+
+    // Convert each byte of the string
+    for(uint16_t i = 0; i < str_in_len; i++)
+    {
+        if(base == 10)
+        {
+            if(ptr[i] >= '0' && ptr[i] <= '9')
+			    digit = ptr[i] - '0';
+            else
+                return RC_INVALID_INPUT;
+        }
+        else if(base == 16)
+        {
+            if(ptr[i] >= '0' && ptr[i] <= '9')
+                digit = ptr[i] - '0';
+            else if (base == 16 && ptr[i] >= 'a' && ptr[i] <= 'f')
+                digit = ptr[i] - 'a' + 10;
+            else if (base == 16 && ptr[i] >= 'A' && ptr[i] <= 'F')
+                digit = ptr[i] - 'A' + 10;
+            else
+                return RC_INVALID_INPUT;
+        }
+        else
+			return RC_INVALID_INPUT;
+
+		*value_out = ((*value_out)*base) + digit;
+	}
+
+	return RC_OK;
 }
 
 // Split a string into array of strings for each word
