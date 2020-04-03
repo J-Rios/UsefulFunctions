@@ -39,6 +39,7 @@ int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* 
 int8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base);
 int8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base);
 int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base);
+uint8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, uint8_t base);
 
 /*************************************************************************************************/
 
@@ -775,24 +776,48 @@ int8_t cstr_is_hex(char* str_in, const size_t str_in_len)
 }
 
 // Convert string into unsigned 8 bytes value
-int8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base)
+uint8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base)
 {
-    return cstr_string_to_u32(str_in, str_in_len, (uint32_t*)value_out, base);
+    uint8_t rc = 0;
+    uint64_t tmp = (uint64_t)(*value_out);
+
+    rc = cstr_string_to_u64(str_in, str_in_len, &tmp, base);
+    *value_out = (uint8_t)(tmp);
+
+    return rc;
 }
 
 // Convert string into unsigned 16 bytes value
-int8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base)
+uint8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base)
 {
-    return cstr_string_to_u32(str_in, str_in_len, (uint32_t*)value_out, base);
+    uint8_t rc = 0;
+    uint64_t tmp = (uint64_t)(*value_out);
+
+    rc = cstr_string_to_u64(str_in, str_in_len, &tmp, base);
+    *value_out = (uint16_t)(tmp);
+
+    return rc;
 }
 
 // Convert string into unsigned 32 bytes value
-int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base)
+uint8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base)
+{
+    uint8_t rc = 0;
+    uint64_t tmp = (uint64_t)(*value_out);
+
+    rc = cstr_string_to_u64(str_in, str_in_len, &tmp, base);
+    *value_out = (uint32_t)(tmp);
+
+    return rc;
+}
+
+// Convert string into unsigned 64 bytes value
+uint8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, uint8_t base)
 {
     char* ptr = str_in;
-	uint8_t digit;
+    uint8_t digit;
 
-	*value_out = 0;
+    *value_out = 0;
 
     // Check for hexadecimal "0x" bytes and go through it
     if(base == 16)
@@ -812,7 +837,7 @@ int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, 
         if(base == 10)
         {
             if(ptr[i] >= '0' && ptr[i] <= '9')
-			    digit = ptr[i] - '0';
+                digit = ptr[i] - '0';
             else
                 return RC_INVALID_INPUT;
         }
@@ -828,12 +853,12 @@ int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, 
                 return RC_INVALID_INPUT;
         }
         else
-			return RC_INVALID_INPUT;
+            return RC_INVALID_INPUT;
 
-		*value_out = ((*value_out)*base) + digit;
-	}
+        *value_out = ((*value_out)*base) + digit;
+    }
 
-	return RC_OK;
+    return RC_OK;
 }
 
 // Split a string into array of strings for each word
