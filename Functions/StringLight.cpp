@@ -861,6 +861,107 @@ int8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, 
     return RC_OK;
 }
 
+// Convert string into signed 8 bytes value
+uint8_t cstr_string_to_i8(char* str_in, size_t str_in_len, int8_t* value_out, uint8_t base)
+{
+    uint8_t rc = 0;
+    int64_t tmp = (int64_t)(*value_out);
+
+    rc = cstr_string_to_i64(str_in, str_in_len, &tmp, base);
+    *value_out = (int8_t)(tmp);
+
+    return rc;
+}
+
+// Convert string into signed 16 bytes value
+uint8_t cstr_string_to_i16(char* str_in, size_t str_in_len, int16_t* value_out, uint8_t base)
+{
+    uint8_t rc = 0;
+    int64_t tmp = (int64_t)(*value_out);
+
+    rc = cstr_string_to_i64(str_in, str_in_len, &tmp, base);
+    *value_out = (int16_t)(tmp);
+
+    return rc;
+}
+
+// Convert string into signed 32 bytes value
+uint8_t cstr_string_to_i32(char* str_in, size_t str_in_len, int32_t* value_out, uint8_t base)
+{
+    uint8_t rc = 0;
+    int64_t tmp = (int64_t)(*value_out);
+
+    rc = cstr_string_to_i64(str_in, str_in_len, &tmp, base);
+    *value_out = (int32_t)(tmp);
+
+    return rc;
+}
+
+// Convert string into signed 64 bytes value
+uint8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, uint8_t base)
+{
+    char* ptr = str_in;
+    uint8_t digit;
+    uint8_t negative_number = 0;
+
+    *value_out = 0;
+
+    // Check for negative symbol
+    if(ptr[0] == '-')
+    {
+        negative_number = 1;
+        if(str_in_len < 2)
+            return RC_INVALID_INPUT;
+        ptr = ptr + 1;
+        str_in_len = str_in_len - 1;
+    }
+
+    // Check for hexadecimal "0x" bytes and go through it
+    if(base == 16)
+    {
+        if((ptr[1] == 'x') || (ptr[1] == 'X'))
+        {
+            if(str_in_len < 3)
+                return RC_INVALID_INPUT;
+            ptr = ptr + 2;
+            str_in_len = str_in_len - 2;
+        }
+    }
+
+    // Convert each byte of the string
+    for(uint16_t i = 0; i < str_in_len; i++)
+    {
+        if(base == 10)
+        {
+            if(ptr[i] >= '0' && ptr[i] <= '9')
+                digit = ptr[i] - '0';
+            else
+                return RC_INVALID_INPUT;
+        }
+        else if(base == 16)
+        {
+            if(ptr[i] >= '0' && ptr[i] <= '9')
+                digit = ptr[i] - '0';
+            else if (base == 16 && ptr[i] >= 'a' && ptr[i] <= 'f')
+                digit = ptr[i] - 'a' + 10;
+            else if (base == 16 && ptr[i] >= 'A' && ptr[i] <= 'F')
+                digit = ptr[i] - 'A' + 10;
+            else
+                return RC_INVALID_INPUT;
+        }
+        else
+            return RC_INVALID_INPUT;
+
+        *value_out = ((*value_out)*base) + digit;
+    }
+
+    // Turn into negative if needs
+    if(negative_number)
+        *value_out = (*value_out)*(-1);
+
+    return RC_OK;
+}
+
 // Split a string into array of strings for each word
 int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* words[], 
     size_t* num_words, const size_t max_num_words, const size_t max_word_length)
