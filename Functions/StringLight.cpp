@@ -839,6 +839,15 @@ int8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, 
 
     *value_out = 0;
 
+    // Check and ignore + symbol
+    if(ptr[0] == '+')
+    {
+        if(str_in_len < 2)
+            return RC_INVALID_INPUT;
+        ptr = ptr + 1;
+        str_in_len = str_in_len - 1;
+    }
+
     // Check for hexadecimal "0x" bytes and go through it
     if(base == 16)
     {
@@ -926,12 +935,15 @@ int8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, u
 
     *value_out = 0;
 
-    // Check for negative symbol
-    if(ptr[0] == '-')
+    // Check for + and - symbols
+    if((ptr[0] == '+') || (ptr[0] == '-'))
     {
-        negative_number = 1;
         if(str_in_len < 2)
             return RC_INVALID_INPUT;
+
+        if(ptr[0] == '-')
+            negative_number = 1;
+
         ptr = ptr + 1;
         str_in_len = str_in_len - 1;
     }
