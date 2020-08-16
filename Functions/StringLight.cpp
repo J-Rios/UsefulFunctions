@@ -38,28 +38,28 @@ int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* 
     size_t* num_words, const size_t max_num_words, const size_t max_word_length);
 
 // Convert string into unsigned 8 bytes value
-uint8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base);
+int8_t cstr_string_to_u8(char* str_in, size_t str_in_len, uint8_t* value_out, uint8_t base);
 
 // Convert string into unsigned 16 bytes value
-uint8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base);
+int8_t cstr_string_to_u16(char* str_in, size_t str_in_len, uint16_t* value_out, uint8_t base);
 
 // Convert string into unsigned 32 bytes value
-uint8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base);
+int8_t cstr_string_to_u32(char* str_in, size_t str_in_len, uint32_t* value_out, uint8_t base);
 
 // Convert string into unsigned 64 bytes value
-uint8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, uint8_t base);
+int8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, uint8_t base);
 
 // Convert string into signed 8 bytes value
-uint8_t cstr_string_to_i8(char* str_in, size_t str_in_len, int8_t* value_out, uint8_t base);
+int8_t cstr_string_to_i8(char* str_in, size_t str_in_len, int8_t* value_out, uint8_t base);
 
 // Convert string into signed 16 bytes value
-uint8_t cstr_string_to_i16(char* str_in, size_t str_in_len, int16_t* value_out, uint8_t base);
+int8_t cstr_string_to_i16(char* str_in, size_t str_in_len, int16_t* value_out, uint8_t base);
 
 // Convert string into signed 32 bytes value
-uint8_t cstr_string_to_i32(char* str_in, size_t str_in_len, int32_t* value_out, uint8_t base);
+int8_t cstr_string_to_i32(char* str_in, size_t str_in_len, int32_t* value_out, uint8_t base);
 
 // Convert string into signed 64 bytes value
-uint8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, uint8_t base);
+int8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, uint8_t base);
 
 /*************************************************************************************************/
 
@@ -882,7 +882,7 @@ int8_t cstr_string_to_u64(char* str_in, size_t str_in_len, uint64_t* value_out, 
 }
 
 // Convert string into signed 8 bytes value
-uint8_t cstr_string_to_i8(char* str_in, size_t str_in_len, int8_t* value_out, uint8_t base)
+int8_t cstr_string_to_i8(char* str_in, size_t str_in_len, int8_t* value_out, uint8_t base)
 {
     uint8_t rc = 0;
     int64_t tmp = (int64_t)(*value_out);
@@ -894,7 +894,7 @@ uint8_t cstr_string_to_i8(char* str_in, size_t str_in_len, int8_t* value_out, ui
 }
 
 // Convert string into signed 16 bytes value
-uint8_t cstr_string_to_i16(char* str_in, size_t str_in_len, int16_t* value_out, uint8_t base)
+int8_t cstr_string_to_i16(char* str_in, size_t str_in_len, int16_t* value_out, uint8_t base)
 {
     uint8_t rc = 0;
     int64_t tmp = (int64_t)(*value_out);
@@ -906,7 +906,7 @@ uint8_t cstr_string_to_i16(char* str_in, size_t str_in_len, int16_t* value_out, 
 }
 
 // Convert string into signed 32 bytes value
-uint8_t cstr_string_to_i32(char* str_in, size_t str_in_len, int32_t* value_out, uint8_t base)
+int8_t cstr_string_to_i32(char* str_in, size_t str_in_len, int32_t* value_out, uint8_t base)
 {
     uint8_t rc = 0;
     int64_t tmp = (int64_t)(*value_out);
@@ -918,7 +918,7 @@ uint8_t cstr_string_to_i32(char* str_in, size_t str_in_len, int32_t* value_out, 
 }
 
 // Convert string into signed 64 bytes value
-uint8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, uint8_t base)
+int8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, uint8_t base)
 {
     char* ptr = str_in;
     uint8_t digit;
