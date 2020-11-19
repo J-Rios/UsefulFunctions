@@ -32,59 +32,6 @@ static inline uint8_t SET_BIT(uint8_t data, uint8_t bit_n)
 
 
 /**
-  * @brief  Reverse bits of a given byte.
-  * i.e.
-  *   REVERSE_BITS(0bABCDEFGH): 0bHGFEDCBA
-  * @param  data Data byte value to reverse bits.
-  * @return Reversed byte bits data.
-  */
-static inline uint8_t REVERSE_BITS(const uint8_t data)
-{
-    return (((data & 0x80) >> 7) | ((data & 0x40) >> 5) |
-            ((data & 0x20) >> 3) | ((data & 0x10) >> 1) |
-            ((data & 0x01) << 7) | ((data & 0x02) << 5) |
-            ((data & 0x04) << 3) | ((data & 0x08) >> 1));
-}
-
-
-/**
-  * @brief  Get the Low Nibble from a Byte.
-  * i.e.
-  *   GET_LOW_NIBBLE(0bABCDEFGH): 0b0000EFGH
-  *     0bABCDEFGH AND 0b00001111 = 0b0000EFGH
-  * @param  data Data byte value to get low nibble from.
-  * @return Low nibble of provided byte.
-  */
-static inline uint8_t GET_LOW_NIBBLE(uint8_t data)
-{   return (uint8_t)(data & 0x0F);   }
-
-
-/**
-  * @brief  Get the High Nibble from a Byte.
-  * i.e.
-  *   GET_HIGH_NIBBLE(0bABCDEFGH): 0bABCD0000
-  *     0bABCDEFGH AND 0b11110000 = 0bABCD0000
-  * @param  data Data byte value to get high nibble from.
-  * @return High nibble of provided byte.
-  */
-static inline uint8_t GET_HIGH_NIBBLE(uint8_t data)
-{   return (uint8_t)((data & 0xF0) >> 4);   }
-
-
-/**
-  * @brief  Create a Byte from Low and High Nibbles.
-  * i.e.
-  *   BYTE_FROM_NIBBLES(0b0000EFGH, 0b0000ABCD): 0bABCDEFGH
-  *     0b0000ABCD << 4 = 0bABCD0000; 0bABCD0000 OR 0b0000EFGH = 0bABCDEFGH
-  * @param  low_nibble Low nibble to create the byte.
-  * @param  high_nibble High nibble to create the byte.
-  * @return Created byte from provided nibbles.
-  */
-static inline uint8_t BYTE_FROM_NIBBLES(uint8_t low_nibble, uint8_t high_nibble)
-{   return (uint8_t)((high_nibble << 4) | low_nibble);   }
-
-
-/**
   * @brief  Shift-Right Byte a number of steps.
   * i.e.
   *   SHIFT_RIGHT(0bABCDEFGH, 3): 0b000ABCDE
@@ -129,9 +76,7 @@ static inline uint8_t NOT(uint8_t in)
   * @return AND operation result.
   */
 static inline uint8_t AND(uint8_t A, uint8_t B)
-{
-    return (uint8_t)(A & B);
-}
+{   return (uint8_t)(A & B);   }
 
 
 /**
@@ -154,3 +99,56 @@ static inline uint8_t OR(uint8_t A, uint8_t B)
   */
 static inline uint8_t XOR(uint8_t A, uint8_t B)
 {   return (uint8_t)(A ^ B);   }
+
+
+/**
+  * @brief  Get the Low Nibble from a Byte.
+  * i.e.
+  *   GET_LOW_NIBBLE(0bABCDEFGH): 0b0000EFGH
+  *     0bABCDEFGH AND 0b00001111 = 0b0000EFGH
+  * @param  data Data byte value to get low nibble from.
+  * @return Low nibble of provided byte.
+  */
+static inline uint8_t GET_LOW_NIBBLE(uint8_t data)
+{   return (uint8_t)(data & 0x0F);   }
+
+
+/**
+  * @brief  Get the High Nibble from a Byte.
+  * i.e.
+  *   GET_HIGH_NIBBLE(0bABCDEFGH): 0bABCD0000
+  *     0bABCDEFGH AND 0b11110000 = 0bABCD0000
+  * @param  data Data byte value to get high nibble from.
+  * @return High nibble of provided byte.
+  */
+static inline uint8_t GET_HIGH_NIBBLE(uint8_t data)
+{   return (uint8_t)((data & 0xF0) >> 4);   }
+
+
+/**
+  * @brief  Create a Byte from Low and High Nibbles.
+  * i.e.
+  *   BYTE_FROM_NIBBLES(0b0000EFGH, 0b0000ABCD): 0bABCDEFGH
+  *     0b0000ABCD << 4 = 0bABCD0000; 0bABCD0000 OR 0b0000EFGH = 0bABCDEFGH
+  * @param  low_nibble Low nibble to create the byte.
+  * @param  high_nibble High nibble to create the byte.
+  * @return Created byte from provided nibbles.
+  */
+static inline uint8_t BYTE_FROM_NIBBLES(uint8_t low_nibble, uint8_t high_nibble)
+{   return (uint8_t)((high_nibble << 4) | low_nibble);   }
+
+
+/**
+  * @brief  Reverse bits of a given byte.
+  * i.e.
+  *   REVERSE_BITS(0bABCDEFGH): 0bHGFEDCBA
+  * @param  data Data byte value to reverse bits.
+  * @return Reversed byte bits data.
+  */
+static inline uint8_t REVERSE_BITS(const uint8_t data)
+{
+    return (((data & 0x80) >> 7) | ((data & 0x40) >> 5) |
+            ((data & 0x20) >> 3) | ((data & 0x10) >> 1) |
+            ((data & 0x01) << 7) | ((data & 0x02) << 5) |
+            ((data & 0x04) << 3) | ((data & 0x08) >> 1));
+}
