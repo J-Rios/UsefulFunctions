@@ -133,24 +133,24 @@ static inline uint8_t XOR(uint8_t A, uint8_t B)
 /**
   * @brief  Get the Low Nibble from a Byte.
   * i.e.
-  *   GET_LOW_NIBBLE(0bABCDEFGH): 0b0000EFGH
+  *   NIBBLE_GET_LOW(0bABCDEFGH): 0b0000EFGH
   *     0bABCDEFGH AND 0b00001111 = 0b0000EFGH
   * @param  data Data byte value to get low nibble from.
   * @return Low nibble of provided byte.
   */
-static inline uint8_t GET_LOW_NIBBLE(uint8_t data)
+static inline uint8_t NIBBLE_GET_LOW(uint8_t data)
 {   return (uint8_t)(data & 0x0F);   }
 
 
 /**
   * @brief  Get the High Nibble from a Byte.
   * i.e.
-  *   GET_HIGH_NIBBLE(0bABCDEFGH): 0bABCD0000
-  *     0bABCDEFGH AND 0b11110000 = 0bABCD0000
+  *   NIBBLE_GET_HIGH(0bABCDEFGH): 0b0000ABCD
+  *     0bABCDEFGH AND 0b11110000 = 0bABCD0000 >> 4 = 0b0000ABCD
   * @param  data Data byte value to get high nibble from.
   * @return High nibble of provided byte.
   */
-static inline uint8_t GET_HIGH_NIBBLE(uint8_t data)
+static inline uint8_t NIBBLE_GET_HIGH(uint8_t data)
 {   return (uint8_t)((data & 0xF0) >> 4);   }
 
 
