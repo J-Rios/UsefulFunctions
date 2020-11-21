@@ -2,33 +2,62 @@
 /**
   * @brief  Return Bit value from given byte.
   * i.e.
-  *   GET_BIT(0bABCDEFGH, 0): 0b0000000H
-  *   GET_BIT(0bABCDEFGH, 3): 0b0000000E
-  *   GET_BIT(0bABCDEFGH, 7): 0b0000000A
+  *   BIT_GET(0bABCDEFGH, 0): 0b0000000H
+  *   BIT_GET(0bABCDEFGH, 3): 0b0000000E
+  *   BIT_GET(0bABCDEFGH, 7): 0b0000000A
   * @param  data Data byte to get the bit value.
   * @param  bit_n Bit number (from LSB to MSB) of data byte to get the value.
   * @return Byte data bit value.
   */
-static inline uint8_t GET_BIT(const uint8_t data, const uint8_t bit_n)
+static inline uint8_t BIT_GET(const uint8_t data, const uint8_t bit_n)
 {   return ((data >> bit_n) & 0x01);   }
-static inline uint8_t GET_BIT(const uint16_t data, const uint8_t bit_n)
+static inline uint8_t BIT_GET(const uint16_t data, const uint8_t bit_n)
 {   return ((data >> bit_n) & 0x01);   }
-static inline uint8_t GET_BIT(const uint32_t data, const uint8_t bit_n)
+static inline uint8_t BIT_GET(const uint32_t data, const uint8_t bit_n)
 {   return ((data >> bit_n) & 0x01);   }
 
 
 /**
   * @brief  Set a bit value of a Byte.
   * i.e.
-  *   SET_BIT(0bABCDEFGH, 0): 0bABCDEFG1
-  *   SET_BIT(0bABCDEFGH, 3): 0bABCD1FGH
-  *   SET_BIT(0bABCDEFGH, 7): 0b1BCDEFGH
+  *   BIT_SET(0bABCDEFGH, 0): 0bABCDEFG1
+  *   BIT_SET(0bABCDEFGH, 3): 0bABCD1FGH
+  *   BIT_SET(0bABCDEFGH, 7): 0b1BCDEFGH
   * @param  data Data byte to set the bit value.
-  * @param  bit_n Bit number (from LSB to MSB) of data byte to get the value.
+  * @param  bit_n Bit number (from LSB to MSB) of data byte to set.
   * @return provided byte with the bit set.
   */
-static inline uint8_t SET_BIT(uint8_t data, uint8_t bit_n)
+static inline uint8_t BIT_SET(uint8_t data, uint8_t bit_n)
 {   return (uint8_t)(data | (1<<bit_n));   }
+
+
+/**
+  * @brief  Clear a bit value of a Byte.
+  * i.e.
+  *   BIT_CLEAR(0bABCDEFGH, 0): 0bABCDEFG0
+  *   BIT_CLEAR(0bABCDEFGH, 3): 0bABCD0FGH
+  *   BIT_CLEAR(0bABCDEFGH, 7): 0b0BCDEFGH
+  * @param  data Data byte to clear the bit value.
+  * @param  bit_n Bit number (from LSB to MSB) of data byte to clear.
+  * @return provided byte with the bit clear.
+  */
+static inline uint8_t BIT_CLEAR(uint8_t data, uint8_t bit_n)
+{   return (uint8_t)(data & ~(1<<bit_n));   }
+
+
+/**
+  * @brief  Toggle a bit value of a Byte.
+  * i.e.
+  *   BIT_TOGGLE(0bABCDEF0H, 1): 0bABCDEF1H
+  *   BIT_TOGGLE(0bABCDEF1H, 1): 0bABCDEF0H
+  *   BIT_TOGGLE(0b0BCDEFGH, 7): 0b1BCDEFGH
+  *   BIT_TOGGLE(0b1BCDEFGH, 7): 0b0BCDEFGH
+  * @param  data Data byte to toggle the bit value.
+  * @param  bit_n Bit number (from LSB to MSB) of data byte to toggle.
+  * @return provided byte with the bit toggled.
+  */
+static inline uint8_t BIT_TOGGLE(uint8_t data, uint8_t bit_n)
+{   return (uint8_t)(data ^ (1<<bit_n));   }
 
 
 /**
