@@ -13,6 +13,9 @@
 
 /*** Interface ***/
 
+bool char_is_a_num(char c);
+uint8_t char_to_int(char c);
+uint8_t char_to_int_hex(char c);
 uint32_t cstr_count_char(const char* str_in, const size_t str_in_len, const char c);
 uint32_t cstr_count_words(const char* str_in, const size_t str_in_len);
 void str_rm_char(char* str, const char c_remove, char* readed=NULL);
@@ -33,6 +36,7 @@ int32_t cstr_get_substr_between(const char* str_input, const size_t str_input_le
 void cstr_lower(char* cstr, const size_t cstr_max_length);
 void cstr_upper(char* cstr, const size_t cstr_max_length);
 int8_t is_valid_mac_address(const char* mac_address);
+bool is_a_valid_string_version(const char* str_ver, const uint8_t str_ver_len);
 int8_t cstr_is_hex(char* str_in, const size_t str_in_len);
 int8_t cstr_split_into_words(const char* str_in, const size_t str_in_len, char* words[], 
     size_t* num_words, const size_t max_num_words, const size_t max_word_length);
@@ -64,6 +68,39 @@ int8_t cstr_string_to_i64(char* str_in, size_t str_in_len, int64_t* value_out, u
 /*************************************************************************************************/
 
 /*** Implementation ***/
+
+bool char_is_a_num(char c)
+{
+	return ((c >= '0') && (c <= '9'));
+}
+
+uint8_t char_to_int(char c)
+{
+	uint8_t n = 0;
+
+	if ((c >= '0') && (c <= '9'))
+		n = c - '0';
+	else
+		n = 255;
+
+	return n;
+}
+
+uint8_t char_to_int_hex(char c)
+{
+	uint8_t n = 0;
+
+	if ((c >= '0') && (c <= '9'))
+		n = c - '0';
+	else if ((c >= 'a') && (c <= 'f'))
+		n = c - 'a' + 10;
+	else if ((c >= 'A') && (c <= 'F'))
+		n = c - 'A' + 10;
+	else
+		n = 255;
+
+	return n;
+}
 
 // Count the number of a character inside a string
 uint32_t cstr_count_char(const char* str_in, const size_t str_in_len, const char c)
@@ -768,6 +805,34 @@ int8_t is_valid_mac_address(const char* mac_address)
     }
 
     return RC_OK;
+}
+
+bool is_a_valid_string_version(const char* str_ver, const uint8_t str_ver_len)
+{
+	uint8_t num_dots = 0;
+
+	// Check if string version has an invalid number of characters
+	// Expected number of characters in range: "X.Y.Z" to "XXX.YYY.ZZZ"
+	if((str_ver_len < 5) || (str_ver_len > 11))
+		return false;
+
+	// Check if version string has 3 dots and expected characters
+	for(uint8_t i = 0; i < str_ver_len; i++)
+	{
+		// Check for invalid character
+		if((str_ver[i] < '0' || str_ver[i] > '9') && (str_ver[i] != '.'))
+			return false;
+
+		// Count dots
+		if(str_ver[i] == '.')
+			num_dots = num_dots + 1;
+	}
+
+	// Check for unexpected number of dots
+	if(num_dots != 2)
+		return false;
+
+	return true;
 }
 
 // Check if string is a valid hexadecimal value
